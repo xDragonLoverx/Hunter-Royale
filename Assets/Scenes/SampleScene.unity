@@ -706,6 +706,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   GroundDrag: 5
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  StepSoundRange: 5
+  StepTime: 100
 --- !u!1001 &2002810864
 PrefabInstance:
   m_ObjectHideFlags: 0
