@@ -141,28 +141,31 @@ public class FawnAgent : MonoBehaviour
     }
     void Attack()
     {
-        bool NoAttacksLeft = true;
-        foreach (int i in KillChoices)
+        if (Mode != BehaviorMode.Fleeing)
         {
-            if (i != -1) { NoAttacksLeft = false; }
-        }
-        if (!NoAttacksLeft)
-        {
-            Mode = BehaviorMode.Waiting;
-            ThisKillScreen = Instantiate(KillScreen, Canvas.transform);
-            for (int i = 0; i < KillChoices.Length; i++)
+            bool NoAttacksLeft = true;
+            foreach (int i in KillChoices)
             {
-                if (KillChoices[i] == -1)
-                {
-                    ThisKillScreen.transform.GetChild(i).gameObject.SetActive(false);
-                }
+                if (i != -1) { NoAttacksLeft = false; }
             }
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        else
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            if (!NoAttacksLeft)
+            {
+                Mode = BehaviorMode.Waiting;
+                ThisKillScreen = Instantiate(KillScreen, Canvas.transform);
+                for (int i = 0; i < KillChoices.Length; i++)
+                {
+                    if (KillChoices[i] == -1)
+                    {
+                        ThisKillScreen.transform.GetChild(i).gameObject.SetActive(false);
+                    }
+                }
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
         }
     }
     public void KillChoice(int choice)
