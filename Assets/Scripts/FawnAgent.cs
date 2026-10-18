@@ -13,7 +13,7 @@ public class FawnAgent : MonoBehaviour
     }
     BehaviorMode Mode;
 
-    [SerializeField] Transform[] Waypoints;
+    Transform[] Waypoints;
     Transform CurrentWaypoint;
 
     GameObject Player;
@@ -171,10 +171,11 @@ public class FawnAgent : MonoBehaviour
         switch (choice)
         {
             case 0:
-                //Player.GetComponent<PlayerMovement>().SetSpeedModifier(0.75f);
+                Player.GetComponent<PlayerMovement>().SetSpeedModifier(0.75f);
                 break;
             case 1:
                 Player.transform.GetChild(3).gameObject.SetActive(true);
+                GameObject.Find("Directional Light").GetComponent<Light>().intensity = 0;
                 break;
             case 2:
                 //GameObject.Find("FightAgent").GetComponent<FightAgent>().Alert(Player.transform.position);
@@ -226,7 +227,7 @@ public class FawnAgent : MonoBehaviour
         switch (choice)
         {
             case 0:
-                //Player.GetComponent<PlayerMovement>().SetSpeedModifier(1.25f);
+                Player.GetComponent<PlayerMovement>().SetSpeedModifier(1.25f);
                 break;
             case 1:
                 GameObject.Find("TestCube").transform.GetChild(1).gameObject.SetActive(true);
@@ -237,7 +238,7 @@ public class FawnAgent : MonoBehaviour
                 //GameObject.Find("FollowAgent").transform.GetChild(1).gameObject.SetActive(true);
                 break;
             case 2:
-                //Player.GetComponent<PlayerMovement>().SetAttackModifier(1.5f);
+                Player.GetComponent<PlayerMovement>().SetAttackModifier(1.5f);
                 break;
         }
         Destroy(ThisBargainScreen);
@@ -253,12 +254,19 @@ public class FawnAgent : MonoBehaviour
     }
     public void Alert(Transform location)
     {
-        if (Mode == BehaviorMode.Searching) { Mode = BehaviorMode.Chasing; }
-        Agent.SetDestination(location.position);
-        CurrentWaypoint = location;
+        if (Mode != BehaviorMode.Fleeing)
+        {
+            if (Mode == BehaviorMode.Searching) { Mode = BehaviorMode.Chasing; }
+            Agent.SetDestination(location.position);
+            CurrentWaypoint = location;
+        }
     }
     public void StartFleeing()
     {
+        GameObject.Find("Directional Light").GetComponent<Light>().intensity = 2;
+        Player.transform.GetChild(3).gameObject.SetActive(false);
+        Player.GetComponent<PlayerMovement>().SetSpeedModifier(1);
+
         Mode = BehaviorMode.Fleeing;
         FindNewWaypoint();
     }

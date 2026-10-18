@@ -20,6 +20,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float StepSoundRange;
     [SerializeField] int StepTime;
     int CurrentSteps;
+
+    float SpeedMultiplier = 1;
+    float AttackMultiplier = 1;
     private void Start()
     {
         RB = GetComponent<Rigidbody>();
@@ -46,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
             CurrentSteps = 0;
             MakeNoise(StepSoundRange);
         }
+        Debug.Log(RB.linearVelocity);
     }
     private void FixedUpdate()
     {
@@ -60,47 +64,49 @@ public class PlayerMovement : MonoBehaviour
     {
         MoveDirection = Orientation.forward * VerticalInput + Orientation.right * HorizontalInput;
 
-        RB.AddForce(MoveDirection.normalized * MoveSpeed * 10f, ForceMode.Force);
+        RB.AddForce(MoveDirection.normalized * MoveSpeed * SpeedMultiplier * 10f, ForceMode.Force);
     }
     private void SpeedControl(Vector3 flatVel)
     {
 
-        if (flatVel.magnitude > MoveSpeed)
+        if (flatVel.magnitude > MoveSpeed * SpeedMultiplier)
         {
-            Vector3 limitedVelocity = flatVel.normalized * MoveSpeed;
+            Vector3 limitedVelocity = flatVel.normalized * MoveSpeed * SpeedMultiplier;
             RB.linearVelocity = new Vector3(limitedVelocity.x, 0, limitedVelocity.z);
         }
     }
     public void MakeNoise(float range)
     {
-        Debug.Log("Step");
         Collider[] Nearby = Physics.OverlapSphere(transform.position, range, EnemyLayer);
         foreach (Collider c in Nearby)
         {
             /*
             if (c.gameObject.TryGetComponent<FightAgent>(out FightAgent script))
             {
-                FightAgent.Alert(transform);
+                script.Alert(transform);
             }
             else if (c.gameObject.TryGetComponent<FlightAgent>(out FlightAgent script))
             {
-                FlightAgent.Alert(transform);
+                script.Alert(transform);
             }
             else if (c.gameObject.TryGetComponent<FreezeAgent>(out FreezeAgent script))
             {
-                FreezeAgent.Alert(transform);
+                script.Alert(transform);
             }
-            else if (c.gameObject.TryGetComponent<FawnAgent>(out FawnAgent script))
+            else*/ if (c.transform.parent.gameObject.TryGetComponent<FawnAgent>(out FawnAgent script))
             {
-                FawnAgent.Alert(transform);
+                script.Alert(transform);
             }
+            /*
             else if (c.gameObject.TryGetComponent<FollowAgent>(out FollowAgent script))
             {
-                FollowAgent.Alert(transform);
+                script.Alert(transform);
             }
             */
         }
     }
+    public void SetSpeedModifier(float value) { SpeedMultiplier = value; }
+    public void SetAttackModifier(float value) { AttackMultiplier = value; }
     /* Sameple Alert Function
     public void Alert(Transform location)
     {

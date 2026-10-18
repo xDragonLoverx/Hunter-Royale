@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6185144221054003933}
   - component: {fileID: 8888045339673870810}
   - component: {fileID: 2828114734347800677}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 1311178339979360680}
   - component: {fileID: 745294287169124724}
   - component: {fileID: 1479443970857294835}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: FawnAgent
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -1173,6 +1173,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   GroundDrag: 5
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  StepSoundRange: 5
+  StepTime: 100
 --- !u!4 &1905067613 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5544270370427555765, guid: 1c644045b14c07b4abe10ec41f9db700, type: 3}
