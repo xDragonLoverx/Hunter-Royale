@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-
 
 public class FollowAgent : MonoBehaviour
 {
@@ -21,23 +19,19 @@ public class FollowAgent : MonoBehaviour
     public float moveSpeed = 3f;
     public float rotateSpeed = 2f;
     public float stoppingDistance = 5f;
+    [SerializeField] private float wallCheckDistance = 1.5f;
+    private float turnAmount = 90f;
 
+    
     [Header("Vision")]
     [SerializeField] private float visionAngle = 45f;
-    [SerializeField]
+    
     private bool playerSeen = false;
     
-
-
-
     [Header("Waypoints")]
     Transform[] spawnWaypoints;
     Transform currWaypoint;
 
-
-
-
-    Transform spawnWaypoint;
 
     void Start()
     {
@@ -73,10 +67,37 @@ public class FollowAgent : MonoBehaviour
         // Check if too close to player to keep follow behavior
         if (distanceToPlayer > stoppingDistance)
         {
-            transform.position += dir.normalized * moveSpeed * Time.deltaTime;
+            // Checks if maze walls are directly in front for movement
+            if (WallBlocking())
+            {
+                // The turning
+                transform.Rotate(0f, turnAmount * Time.deltaTime, 0f);
+
+
+            }
+            else
+            {
+                // Continue moving towards the player pos
+                transform.position += dir.normalized * moveSpeed * Time.deltaTime;
+
+            }
+
         }
 
      }
+
+    private bool WallBlocking()
+    {
+        Vector3 rayStart = transform.position + Vector3.up;
+
+        if (Physics.Raycast(rayStart, transform.forward, out RaycastHit hit, wallCheckDistance))
+        {
+            return true;
+        }
+
+        return false;
+    
+    }
 
     // Makes cone of vision only front facing instead of using 360 degrees
     private bool IsPlayerInVision(Transform target)
@@ -88,8 +109,30 @@ public class FollowAgent : MonoBehaviour
 
         float angleToPlayer = Vector3.Angle(transform.forward, dirToPlayer);
 
-        return angleToPlayer <= visionAngle;
-    }
+        // Handle if player is outside of the designated vision cone
+        if (angleToPlayer > visionAngle)
+        {
+            return false;
+        }
+
+        float distanceToPlayer = dirToPlayer.magnitude;
+
+        // Beginning raycasting for obstacles starting above ground a little
+        Vector3 rayStart = transform.position + Vector3.up;
+
+
+        if (Physics.Raycast(rayStart, dirToPlayer.normalized, out RaycastHit hit, distanceToPlayer))
+        {
+            if (hit.collider.CompareTag("Wall"))
+            {
+                return false;
+            }
+        }
+
+            return true;
+
+        }
+
 
     // Checking with sphere collider
     private void OnTriggerStay(Collider other)

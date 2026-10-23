@@ -714,7 +714,6 @@ MonoBehaviour:
   rotateSpeed: 2.75
   stoppingDistance: 5.25
   visionAngle: 45
-  playerSeen: 0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1233,6 +1232,10 @@ PrefabInstance:
     - target: {fileID: 3045439055923157291, guid: e667dacc4e049c74bbfb716fff14e9db, type: 3}
       propertyPath: m_Name
       value: MazeObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 3762307404128950518, guid: e667dacc4e049c74bbfb716fff14e9db, type: 3}
+      propertyPath: m_TagString
+      value: Wall
       objectReference: {fileID: 0}
     - target: {fileID: 6235285619904048486, guid: e667dacc4e049c74bbfb716fff14e9db, type: 3}
       propertyPath: m_Size.x
