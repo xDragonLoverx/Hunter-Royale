@@ -706,6 +706,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   GroundDrag: 5
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  StepSoundRange: 0
+  StepTime: 0
 --- !u!1001 &2002810864
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -770,7 +775,12 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8357392405980742491, guid: e667dacc4e049c74bbfb716fff14e9db, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8357392405980742491, guid: e667dacc4e049c74bbfb716fff14e9db, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
