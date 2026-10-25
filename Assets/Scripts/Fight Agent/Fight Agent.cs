@@ -28,6 +28,7 @@ public class FightAgent : MonoBehaviour
     Transform player;
     Vector3 targetDestination;
     List<Vector3> allNodes = new List<Vector3>();
+    List<Vector3> nodesInCurrentPath = new List<Vector3>();
     List<Vector3> pointsOfInterest = new List<Vector3>();
 
     //  --VALUES--
