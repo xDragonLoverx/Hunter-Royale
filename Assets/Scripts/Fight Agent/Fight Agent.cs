@@ -25,14 +25,14 @@ public class FightAgent : MonoBehaviour
 
     //  --VALUES--
 
-    const float MOVESPEED = 10f;
+    const float MOVESPEED = 5f;
     const float ROTATESPEED = 10f;
     const float ATTACKCOOLDOWN = 1f;
 
     bool isInHuntingMode = true;
-    [SerializeField] bool canSeePlayer;
+    bool canSeePlayer;
     bool canAttack = true;
-    [SerializeField] FightAgentBehavior currentBehavior;
+    FightAgentBehavior currentBehavior;
     Transform targetDestination;
 
     //  --GETTERS--
@@ -53,10 +53,6 @@ public class FightAgent : MonoBehaviour
     {
         onAlertAgent = null;
     }
-    void Start()
-    {
-        targetDestination = player;
-    }
     void Update()
     {
         switch (currentBehavior)
@@ -68,19 +64,20 @@ public class FightAgent : MonoBehaviour
                 Investigate();
                 break;
             case FightAgentBehavior.Chasing:
-                if (isInHuntingMode && canSeePlayer)
-                {
-                    Chase();
-                }
+                Chase();
                 break;
             case FightAgentBehavior.Fleeing:
-                if (!isInHuntingMode && canSeePlayer)
-                {
-                    Flee();
-                }
+                Flee();
                 break;
         }
-        transform.LookAt(targetDestination);
+    }
+    void FixedUpdate()
+    {
+        if(targetDestination != null)
+        {
+            StartCoroutine(LookAtTarget(targetDestination));
+            transform.Translate(transform.forward * MOVESPEED * Time.deltaTime);
+        }
     }
 
     //  ===CUSTOM METHODS===
@@ -100,17 +97,14 @@ public class FightAgent : MonoBehaviour
         if (canSeePlayer)
         {
             targetDestination = player;
-            if(Physics.CheckSphere(transform.position, 1.5f, playerLayerMask))
+            if(canAttack && Physics.CheckSphere(transform.position, 1.5f, playerLayerMask))
             {
-                if (canAttack)
-                {
-                    StartCoroutine(Attack());
-                }
+                StartCoroutine(Attack());
             }
         }
         else
         {
-
+            currentBehavior = FightAgentBehavior.Investigating;
         }
     }
     void Flee()
@@ -128,7 +122,32 @@ public class FightAgent : MonoBehaviour
 
     //  -Navigation-
 
-
+    void CheckLineOfSight()
+    {
+        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo))
+        {
+            if(hitInfo.transform == player)
+            {
+                canSeePlayer = true;
+                if (isInHuntingMode)
+                {
+                    currentBehavior = FightAgentBehavior.Chasing;
+                }
+                else
+                {
+                    currentBehavior = FightAgentBehavior.Fleeing;
+                }
+            }
+            else
+            {
+                canSeePlayer = false;
+            }
+            if (hitInfo.transform.tag.Equals("Obstacle"))
+            {
+                targetDestination = hitInfo.transform;
+            }
+        }
+    }
 
     //  -Other-
 
@@ -140,5 +159,18 @@ public class FightAgent : MonoBehaviour
 
             targetDestination = objectOfInterest;
         }
+    }
+    IEnumerator LookAtTarget(Transform objectToLookAt)
+    {
+        Quaternion lookRotation = Quaternion.LookRotation(objectToLookAt.position - transform.position);
+        float progress = 0f;
+        while (progress < 1f)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, progress);
+            transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, transform.eulerAngles.z);
+            progress += Time.deltaTime * ROTATESPEED;
+            yield return null;
+        }
+        CheckLineOfSight();
     }
 }
