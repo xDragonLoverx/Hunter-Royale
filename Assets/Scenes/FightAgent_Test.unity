@@ -457,7 +457,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 886882591}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Orientation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -488,7 +488,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1007657018}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: CameraPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -562,6 +562,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9152187758596506968, guid: 80b1fa4d074d0b24a8f0681c451ffdf4, type: 3}
+      propertyPath: canSeePlayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152187758596506968, guid: 80b1fa4d074d0b24a8f0681c451ffdf4, type: 3}
+      propertyPath: currentBehavior
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -579,7 +587,7 @@ GameObject:
   - component: {fileID: 1444448117}
   - component: {fileID: 1444448116}
   - component: {fileID: 1444448115}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PlayerObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -692,7 +700,7 @@ GameObject:
   - component: {fileID: 1601767393}
   - component: {fileID: 1601767392}
   - component: {fileID: 1601767394}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -765,9 +773,9 @@ MonoBehaviour:
   GroundDrag: 5
   EnemyLayer:
     serializedVersion: 2
-    m_Bits: 0
-  StepSoundRange: 0
-  StepTime: 0
+    m_Bits: 512
+  StepSoundRange: 5
+  StepTime: 2
 --- !u!1001 &2002810864
 PrefabInstance:
   m_ObjectHideFlags: 0

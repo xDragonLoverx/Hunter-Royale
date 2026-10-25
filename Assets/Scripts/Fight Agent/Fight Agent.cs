@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 public class FightAgent : MonoBehaviour
 {
@@ -13,14 +14,12 @@ public class FightAgent : MonoBehaviour
         Roaming,
         Investigating,
         Chasing,
-        Fleeing,
-        Attacking
+        Fleeing
     }
 
     //  --COMPONENTS--
-    
-    [SerializeField] SphereCollider hearingRange;
-    [SerializeField] SphereCollider attackingRange;
+
+    [SerializeField] LayerMask playerLayerMask;
 
     Transform player;
 
@@ -28,8 +27,11 @@ public class FightAgent : MonoBehaviour
 
     const float MOVESPEED = 10f;
     const float ROTATESPEED = 10f;
+    const float ATTACKCOOLDOWN = 1f;
 
-    bool isInHuntingMode;
+    bool isInHuntingMode = true;
+    [SerializeField] bool canSeePlayer;
+    bool canAttack = true;
     [SerializeField] FightAgentBehavior currentBehavior;
     Transform targetDestination;
 
@@ -45,7 +47,7 @@ public class FightAgent : MonoBehaviour
     }
     void OnEnable()
     {
-
+        onAlertAgent = AlertAgent;
     }
     void OnDisable()
     {
@@ -66,19 +68,16 @@ public class FightAgent : MonoBehaviour
                 Investigate();
                 break;
             case FightAgentBehavior.Chasing:
-                if (isInHuntingMode)
+                if (isInHuntingMode && canSeePlayer)
                 {
                     Chase();
                 }
                 break;
             case FightAgentBehavior.Fleeing:
-                if (!isInHuntingMode)
+                if (!isInHuntingMode && canSeePlayer)
                 {
                     Flee();
                 }
-                break;
-            case FightAgentBehavior.Attacking:
-                Attack();
                 break;
         }
         transform.LookAt(targetDestination);
@@ -98,26 +97,33 @@ public class FightAgent : MonoBehaviour
     }
     void Chase()
     {
+        if (canSeePlayer)
+        {
+            targetDestination = player;
+            if(Physics.CheckSphere(transform.position, 1.5f, playerLayerMask))
+            {
+                if (canAttack)
+                {
+                    StartCoroutine(Attack());
+                }
+            }
+        }
+        else
+        {
 
+        }
     }
     void Flee()
     {
 
     }
-    void Attack()
+    IEnumerator Attack()
     {
-        
-        //else
-        //{
-        //    if (isInHuntingMode)
-        //    {
-        //        currentBehavior = FightAgentBehavior.Chasing;
-        //    }
-        //    else
-        //    {
-        //        currentBehavior = FightAgentBehavior.Fleeing;
-        //    }
-        //}
+        Debug.Log("Attacka");
+
+        canAttack = false;
+        yield return new WaitForSeconds(ATTACKCOOLDOWN);
+        canAttack = true;
     }
 
     //  -Navigation-
@@ -130,6 +136,8 @@ public class FightAgent : MonoBehaviour
     {
         if (currentBehavior == FightAgentBehavior.Roaming || currentBehavior == FightAgentBehavior.Investigating)
         {
+            Debug.Log("Whoa something here");
+
             targetDestination = objectOfInterest;
         }
     }

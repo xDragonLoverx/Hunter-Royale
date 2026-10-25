@@ -77,11 +77,22 @@ public class PlayerMovement : MonoBehaviour
         Collider[] Nearby = Physics.OverlapSphere(transform.position, range, EnemyLayer);
         foreach (Collider c in Nearby)
         {
-            /*
-            if (c.gameObject.TryGetComponent<FightAgent>(out FightAgent script))
+            /// I'm not sure who wrote this if-else-if chain below, but it isn't going to work the way you want it to.
+            /// The way it's written now means that you're trying to invoke a method from within the class itself.
+            /// However, what's currently written won't work unless everyone decided to make their alert function both public and static for some reason.
+            /// (In truth, it's better practice to keep things private and utilize getters and setters unless something absolutely *needs* to be public, but I won't get into that here.)
+            /// You need to invoke the method from the instance of the class within the corresponding agent's GameObject.
+            /// There's a multitude of ways you can do this, but for now, consider using the {script} variable from your {out [Some Agent Script] script} call, as I have done.
+            /// -Sylvia
+            /// PS: Said {script} variables need distinctive names, as you can't have multiple local variables named the same thing.
+
+            if (c.gameObject.TryGetComponent(out FightAgent fightScript))
             {
-                FightAgent.Alert(transform);
+                fightScript.OnAlertAgent?.Invoke(transform);
             }
+
+            /*
+            
             else if (c.gameObject.TryGetComponent<FlightAgent>(out FlightAgent script))
             {
                 FlightAgent.Alert(transform);
