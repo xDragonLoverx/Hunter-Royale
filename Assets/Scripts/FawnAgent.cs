@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -26,9 +27,9 @@ public class FawnAgent : MonoBehaviour
     [SerializeField] GameObject BargainScreen;
     GameObject ThisBargainScreen;
 
-    [SerializeField] NavMeshAgent Agent;
+    [SerializeField] FawnNavigation Agent;
     [SerializeField] LayerMask SightLayer;
-    private void Awake()
+    private void Start()
     {
         Player = GameObject.Find("Player");
         Canvas = GameObject.Find("Canvas");
@@ -42,8 +43,8 @@ public class FawnAgent : MonoBehaviour
         Mode = BehaviorMode.Searching;
         FindNewWaypoint();
 
-        KillChoices = new int[] { 0, 1, 2 };
-        BargainChoices = new int[] { 0, 1, 2 };
+        KillChoices = new int[] { 0, 1, -1 };
+        BargainChoices = new int[] { 0, 1, -1 };
     }
     void Update()
     {
@@ -63,10 +64,10 @@ public class FawnAgent : MonoBehaviour
                     {
                         Mode = BehaviorMode.Chasing;
                     }
-                } 
+                }
                 break;
             case BehaviorMode.Chasing:
-                if (Vector3.Distance(transform.position, Player.transform.position) < 3)
+                if (Vector3.Distance(transform.position, Player.transform.position) <= 6.5f)
                 {
                     Attack();
                 }
@@ -190,9 +191,8 @@ public class FawnAgent : MonoBehaviour
         Destroy(ThisKillScreen);
         Transform furthestPoint = ChooseWaypoint("Teleporting");
         Agent.enabled = false;
-        transform.position = new Vector3(furthestPoint.position.x, transform.position.y, furthestPoint.position.z);
+        GetComponent<Rigidbody>().position = new Vector3(furthestPoint.position.x, transform.position.y, furthestPoint.position.z);
         Agent.enabled = true;
-        Agent.Warp(transform.position);
         Mode = BehaviorMode.Searching;
         FindNewWaypoint();
         Cursor.lockState = CursorLockMode.Locked;
@@ -201,7 +201,7 @@ public class FawnAgent : MonoBehaviour
     public void Die()
     {
         bool NoBargainsLeft = true;
-        foreach (int i in KillChoices)
+        foreach (int i in BargainChoices)
         {
             if (i != -1) { NoBargainsLeft = false; }
         }
@@ -233,24 +233,21 @@ public class FawnAgent : MonoBehaviour
                 Player.GetComponent<PlayerMovement>().SetSpeedModifier(1.25f);
                 break;
             case 1:
-                GameObject.Find("TestCube").transform.GetChild(1).gameObject.SetActive(true);
+                Player.GetComponent<PlayerMovement>().SetAttackModifier(1.5f); break;
+            case 2:
                 gameObject.transform.GetChild(1).gameObject.SetActive(true);
                 //GameObject.Find("FightAgent").transform.GetChild(1).gameObject.SetActive(true);
                 //GameObject.Find("FlightAgent").transform.GetChild(1).gameObject.SetActive(true);
                 //GameObject.Find("FreezeAgent").transform.GetChild(1).gameObject.SetActive(true);
                 //GameObject.Find("FollowAgent").transform.GetChild(1).gameObject.SetActive(true);
                 break;
-            case 2:
-                Player.GetComponent<PlayerMovement>().SetAttackModifier(1.5f);
-                break;
         }
         Destroy(ThisBargainScreen);
         Transform furthestPoint = ChooseWaypoint("Teleporting");
         Agent.enabled = false;
-        transform.position = new Vector3(furthestPoint.position.x, transform.position.y, furthestPoint.position.z);
+        GetComponent<Rigidbody>().position = new Vector3(furthestPoint.position.x, transform.position.y, furthestPoint.position.z);
         Agent.enabled = true;
-        Agent.Warp(transform.position);
-        Mode = BehaviorMode.Searching;
+        Mode = BehaviorMode.Fleeing;
         FindNewWaypoint();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

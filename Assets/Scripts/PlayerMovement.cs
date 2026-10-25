@@ -49,7 +49,6 @@ public class PlayerMovement : MonoBehaviour
             CurrentSteps = 0;
             MakeNoise(StepSoundRange);
         }
-        Debug.Log(RB.linearVelocity);
     }
     private void FixedUpdate()
     {
