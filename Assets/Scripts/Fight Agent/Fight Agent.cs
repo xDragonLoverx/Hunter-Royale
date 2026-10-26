@@ -61,7 +61,10 @@ public class FightAgent : MonoBehaviour
         GameObject[] nodeCollection = GameObject.FindGameObjectsWithTag("Node");
         foreach(GameObject node in nodeCollection)
         {
-            allNodes.Add(node.GetComponent<FightAgentNode>());
+            if(node.TryGetComponent(out FightAgentNode nodeScript))
+            {
+                allNodes.Add(nodeScript);
+            }
         }
     }
     void OnEnable()
