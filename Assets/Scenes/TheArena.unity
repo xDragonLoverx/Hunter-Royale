@@ -9318,7 +9318,7 @@ PrefabInstance:
       objectReference: {fileID: 1601767391}
     - target: {fileID: 1404601382959640394, guid: 9878f8fd5362ba54aa76ac2befba9ae2, type: 3}
       propertyPath: behavior
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1404601382959640394, guid: 9878f8fd5362ba54aa76ac2befba9ae2, type: 3}
       propertyPath: playerTransform
@@ -9338,7 +9338,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6321487225071840605, guid: 9878f8fd5362ba54aa76ac2befba9ae2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 6321487225071840605, guid: 9878f8fd5362ba54aa76ac2befba9ae2, type: 3}
       propertyPath: m_LocalPosition.y
@@ -12414,6 +12414,10 @@ PrefabInstance:
     - target: {fileID: 3045439055923157291, guid: e667dacc4e049c74bbfb716fff14e9db, type: 3}
       propertyPath: m_Name
       value: MazeObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 3045439055923157291, guid: e667dacc4e049c74bbfb716fff14e9db, type: 3}
+      propertyPath: m_TagString
+      value: Ground
       objectReference: {fileID: 0}
     - target: {fileID: 6235285619904048486, guid: e667dacc4e049c74bbfb716fff14e9db, type: 3}
       propertyPath: m_Size.x
