@@ -26,9 +26,9 @@ public class FightAgent : MonoBehaviour
     [SerializeField] LayerMask obstacleLayerMask;
 
     Transform player;
-    Vector3 targetDestination;
+    FightAgentNode currentNode;
+    List<FightAgentNode> currentPath = new List<FightAgentNode>();
     List<FightAgentNode> allNodes = new List<FightAgentNode>();
-    List<Vector3> currentPath = new List<Vector3>();
     List<Vector3> pointsOfInterest = new List<Vector3>();
 
     //  --VALUES--
@@ -42,11 +42,11 @@ public class FightAgent : MonoBehaviour
     const float ATTACKCOOLDOWN = 1f;
 
     bool isInHuntingMode = true;
-    bool nextDestinationDecided;
     bool canSeePlayer;
     bool canListenForNoise = true;
     bool canAttack = true;
     FightAgentBehavior currentBehavior;
+    Transform placeToLookAt;
 
     //  --GETTERS--
 
@@ -74,15 +74,19 @@ public class FightAgent : MonoBehaviour
         onAlertAgent = null;
         onBecomeHunted = null;
     }
+    void Start()
+    {
+        placeToLookAt = player;
+    }
     void Update()
     {
         switch (currentBehavior)
         {
             case FightAgentBehavior.Roaming:
-                StartCoroutine(Roam());
+                //StartCoroutine(Roam());
                 break;
             case FightAgentBehavior.Investigating:
-                StartCoroutine(Investigate());
+                //StartCoroutine(Investigate());
                 break;
             case FightAgentBehavior.Chasing:
                 Chase();
@@ -94,85 +98,57 @@ public class FightAgent : MonoBehaviour
                 DestroyObstacle();
                 break;
         }
-        if(currentBehavior != FightAgentBehavior.Roaming && currentBehavior != FightAgentBehavior.Fleeing)
-        {
-            nextDestinationDecided = false;
-        }
-    }
-    void FixedUpdate()
-    {
-        if(targetDestination != null)
-        {
-            StartCoroutine(LookAtTarget(targetDestination));
-            transform.Translate(transform.forward * MOVESPEED * Time.deltaTime);
-        }
+        StartCoroutine(LookAtTarget(placeToLookAt));
+
+        //if (currentPath.Count > 0)
+        //{
+        //    transform.position = Vector3.MoveTowards(transform.position, new Vector3(currentPath[0].transform.position.x, 0f, currentPath[0].transform.position.z), 3 * Time.deltaTime);
+        //    if (Vector3.Distance(transform.position, currentPath[0].transform.position) <= 0.1f)
+        //    {
+        //        currentPath.RemoveAt(0);
+        //    }
+        //}
+        //else
+        //{
+        //    currentPath = CreatePath();
+        //}
     }
 
     //  ===CUSTOM METHODS===
 
     //  -Behavior-
 
-    IEnumerator Roam()
-    {
-        if (!nextDestinationDecided)
-        {
-            targetDestination = allNodes[UnityEngine.Random.Range(0, allNodes.Count)].transform.position;
-            nextDestinationDecided = true;
-            List<FightAgentNode> newPath = CreatePath();
-            currentPath.Clear();
-            currentPath.Add(targetDestination);
-            foreach(FightAgentNode node in newPath)
-            {
-                currentPath.Add(node.transform.position);
-            }
-        }
-        else if (nextDestinationDecided && Vector3.Distance(transform.position, targetDestination) <= 0.1f)
-        {
-            nextDestinationDecided = false;
-            yield return new WaitForSeconds(UnityEngine.Random.Range(MINIDLETIME, MAXIDLETIME));
-        }
-    }
-    IEnumerator Investigate()
-    {
-        if(pointsOfInterest.Count > 0)
-        {
-            targetDestination = pointsOfInterest[0];
-            if(Vector3.Distance(transform.position, targetDestination) <= 0.1f)
-            {
-                pointsOfInterest.RemoveAt(0);
-                yield return new WaitForSeconds(UnityEngine.Random.Range(MINIDLETIME, MAXIDLETIME));
-            }
-            else
-            {
-                List<FightAgentNode> newPath = CreatePath();
-                currentPath.Clear();
-                currentPath.Add(targetDestination);
-                foreach (FightAgentNode node in newPath)
-                {
-                    currentPath.Add(node.transform.position);
-                }
-            }
-        }
-        else
-        {
-            currentBehavior = FightAgentBehavior.Roaming;
-        }
-    }
+    //IEnumerator Roam()
+    //{
+    //    if (Vector3.Distance(transform.position, targetDestination) <= 0.1f)
+    //    {
+    //        yield return new WaitForSeconds(UnityEngine.Random.Range(MINIDLETIME, MAXIDLETIME));
+    //        targetDestination = allNodes[UnityEngine.Random.Range(0, allNodes.Count)].transform.position;
+    //    }
+    //}
+    //IEnumerator Investigate()
+    //{
+    //    if(pointsOfInterest.Count > 0)
+    //    {
+    //        if(Vector3.Distance(transform.position, pointsOfInterest[0]) <= 0.1f)
+    //        {
+    //            pointsOfInterest.RemoveAt(0);
+    //            yield return new WaitForSeconds(UnityEngine.Random.Range(MINIDLETIME, MAXIDLETIME));
+    //        }
+    //    }
+    //    else
+    //    {
+    //        currentBehavior = FightAgentBehavior.Roaming;
+    //    }
+    //}
     void Chase()
     {
         if (canSeePlayer)
         {
-            targetDestination = player.position;
+            placeToLookAt = player;
             if(canAttack && Physics.CheckSphere(transform.position, 1.5f, playerLayerMask))
             {
                 StartCoroutine(Attack());
-            }
-            List<FightAgentNode> newPath = CreatePath();
-            currentPath.Clear();
-            currentPath.Add(targetDestination);
-            foreach (FightAgentNode node in newPath)
-            {
-                currentPath.Add(node.transform.position);
             }
         }
         else
@@ -189,36 +165,12 @@ public class FightAgent : MonoBehaviour
     {
         if (canSeePlayer && canAttack && Physics.CheckSphere(transform.position, 1.5f, playerLayerMask))
         {
-            targetDestination = player.position;
+            //targetDestination = player.position;
             StartCoroutine(Attack());
         }
         else if(Vector3.Distance(transform.position, player.position) > MAXFLEEDISTANCE)
         {
-            nextDestinationDecided = false;
             currentBehavior = FightAgentBehavior.Roaming;
-        }
-        else if(!nextDestinationDecided)
-        {
-            Vector3 furthestNode = allNodes[0].transform.position;
-            float furthestNodeDistance = 0f;
-            foreach(FightAgentNode node in allNodes)
-            {
-                float distanceToMeasure = Vector3.Distance(transform.position, node.transform.position);
-                if(distanceToMeasure > furthestNodeDistance)
-                {
-                    furthestNode = node.transform.position;
-                    furthestNodeDistance = distanceToMeasure;
-                }
-            }
-            targetDestination = furthestNode;
-            nextDestinationDecided = true;
-            List<FightAgentNode> newPath = CreatePath();
-            currentPath.Clear();
-            currentPath.Add(targetDestination);
-            foreach (FightAgentNode node in newPath)
-            {
-                currentPath.Add(node.transform.position);
-            }
         }
     }
     void DestroyObstacle()
@@ -239,83 +191,87 @@ public class FightAgent : MonoBehaviour
 
     //  -Navigation-
 
-    List<FightAgentNode> CreatePath()
-    {
-        //  -Starting Node Setup-
-        FightAgentNode startingNode = allNodes[0];
-        float shortestDistance = float.MaxValue;
-        foreach(FightAgentNode node in allNodes)
-        {
-            float distanceToMeasure = Vector3.Distance(transform.position, node.transform.position);
-            if(distanceToMeasure < shortestDistance)
-            {
-                startingNode = node;
-                shortestDistance = distanceToMeasure;
-            }
-        }
-        //  -Ending Node Setup-
-        FightAgentNode endingNode = allNodes[0];
-        shortestDistance = float.MaxValue;
-        foreach(FightAgentNode node in allNodes)
-        {
-            float distanceToMeasure = Vector3.Distance(targetDestination, node.transform.position);
-            if(distanceToMeasure < shortestDistance && node != startingNode)
-            {
-                endingNode = node;
-                shortestDistance = distanceToMeasure;
-            }
-        }
-        //  -Pathfinding Setup-
-        List<FightAgentNode> openSet = new List<FightAgentNode>();
-        foreach(FightAgentNode node in allNodes)
-        {
-            node.OnSetGScore?.Invoke(float.MaxValue);
-        }
-        startingNode.OnSetGScore?.Invoke(0f);
-        startingNode.OnSetHScore?.Invoke(Vector3.Distance(startingNode.transform.position, endingNode.transform.position));
-        openSet.Add(startingNode);
-        //  -Pathfinding Algorithm-
-        while(openSet.Count > 0)
-        {
-            int lowestFScoreIndex = 0;
-            foreach(FightAgentNode node in openSet)
-            {
-                if (openSet[openSet.IndexOf(node)].FScore < openSet[lowestFScoreIndex].FScore)
-                {
-                    lowestFScoreIndex = openSet.IndexOf(node);
-                }
-            }
-            FightAgentNode currentNode = openSet[lowestFScoreIndex];
-            openSet.Remove(currentNode);
-            if(currentNode == endingNode)
-            {
-                List<FightAgentNode> potentialPath = new List<FightAgentNode>();
-                potentialPath.Insert(0, endingNode);
-                while (currentNode != startingNode)
-                {
-                    currentNode = currentNode.CameFrom;
-                    potentialPath.Add(currentNode);
-                }
-                potentialPath.Reverse();
-                return potentialPath;
-            }
-            foreach(FightAgentNode connectedNode in currentNode.ConnectedNodes)
-            {
-                float heldGScore = currentNode.GScore + Vector3.Distance(currentNode.transform.position, connectedNode.transform.position);
-                if(heldGScore < currentNode.GScore)
-                {
-                    connectedNode.OnSetCameFrom?.Invoke(currentNode);
-                    connectedNode.OnSetGScore?.Invoke(heldGScore);
-                    connectedNode.OnSetHScore?.Invoke(Vector3.Distance(connectedNode.transform.position, endingNode.transform.position));
-                    if (!openSet.Contains(connectedNode))
-                    {
-                        openSet.Add(connectedNode);
-                    }
-                }
-            }
-        }
-        return null;
-    }
+    //List<FightAgentNode> CreatePath()
+    //{
+    //    //  -Starting Node Setup-
+    //    FightAgentNode startingNode = allNodes[0];
+    //    float shortestDistance = float.MaxValue;
+    //    foreach(FightAgentNode node in allNodes)
+    //    {
+    //        float distanceToMeasure = Vector3.Distance(transform.position, node.transform.position);
+    //        if(distanceToMeasure < shortestDistance)
+    //        {
+    //            startingNode = node;
+    //            shortestDistance = distanceToMeasure;
+    //        }
+    //    }
+    //    //  -Ending Node Setup-
+    //    FightAgentNode endingNode = allNodes[0];
+    //    shortestDistance = float.MaxValue;
+    //    foreach(FightAgentNode node in allNodes)
+    //    {
+    //        float distanceToMeasure = Vector3.Distance(targetDestination, node.transform.position);
+    //        if(distanceToMeasure < shortestDistance && node != startingNode)
+    //        {
+    //            endingNode = node;
+    //            shortestDistance = distanceToMeasure;
+    //        }
+    //    }
+    //    //  -Pathfinding Setup-
+    //    List<FightAgentNode> openSet = new List<FightAgentNode>();
+    //    foreach(FightAgentNode node in allNodes)
+    //    {
+    //        node.OnSetGScore?.Invoke(float.MaxValue);
+    //    }
+    //    startingNode.OnSetGScore?.Invoke(0f);
+    //    startingNode.OnSetHScore?.Invoke(Vector3.Distance(startingNode.transform.position, endingNode.transform.position));
+    //    openSet.Add(startingNode);
+    //    //  -Pathfinding Algorithm-
+    //    while(openSet.Count > 0)
+    //    {
+    //        int lowestFScoreIndex = 0;
+    //        foreach(FightAgentNode node in openSet)
+    //        {
+    //            if (openSet[openSet.IndexOf(node)].FScore < openSet[lowestFScoreIndex].FScore)
+    //            {
+    //                lowestFScoreIndex = openSet.IndexOf(node);
+    //            }
+    //        }
+    //        FightAgentNode currentNode = openSet[lowestFScoreIndex];
+    //        openSet.Remove(currentNode);
+    //        if(currentNode == endingNode)
+    //        {
+    //            List<FightAgentNode> newPath = new List<FightAgentNode>();
+    //            newPath.Insert(0, endingNode);
+    //            while (currentNode != startingNode)
+    //            {
+    //                currentNode = currentNode.CameFrom;
+    //                newPath.Add(currentNode);
+    //            }
+    //            newPath.Reverse();
+    //            foreach(FightAgentNode node in newPath)
+    //            {
+    //                currentPath.Add(node);
+    //            }
+    //            return newPath;
+    //        }
+    //        foreach(FightAgentNode connectedNode in currentNode.ConnectedNodes)
+    //        {
+    //            float heldGScore = currentNode.GScore + Vector3.Distance(currentNode.transform.position, connectedNode.transform.position);
+    //            if(heldGScore < currentNode.GScore)
+    //            {
+    //                connectedNode.OnSetCameFrom?.Invoke(currentNode);
+    //                connectedNode.OnSetGScore?.Invoke(heldGScore);
+    //                connectedNode.OnSetHScore?.Invoke(Vector3.Distance(connectedNode.transform.position, endingNode.transform.position));
+    //                if (!openSet.Contains(connectedNode))
+    //                {
+    //                    openSet.Add(connectedNode);
+    //                }
+    //            }
+    //        }
+    //    }
+    //    return null;
+    //}
 
     void CheckLineOfSight()
     {
@@ -339,7 +295,7 @@ public class FightAgent : MonoBehaviour
                 if (hitInfo.transform.tag.Equals("Obstacle") && isInHuntingMode)
                 {
                     currentBehavior = FightAgentBehavior.DestroyingObstacle;
-                    targetDestination = hitInfo.transform.position;
+                    placeToLookAt = hitInfo.transform;
                 }
             }
         }
@@ -362,9 +318,9 @@ public class FightAgent : MonoBehaviour
             StartCoroutine(HearingCooldown());
         }
     }
-    IEnumerator LookAtTarget(Vector3 placeToLookAt)
+    IEnumerator LookAtTarget(Transform placeToLookAt)
     {
-        Quaternion lookRotation = Quaternion.LookRotation(placeToLookAt - transform.position);
+        Quaternion lookRotation = Quaternion.LookRotation(placeToLookAt.position - transform.position);
         float progress = 0f;
         while (progress < 1f)
         {
