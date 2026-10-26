@@ -37,9 +37,8 @@ public class FreezeAgent : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Camera playerCamera;
 
-    [Header("Debug Status (Read Only)")]
-    [SerializeField] private bool playerHasLineOfSight = false;
-    [SerializeField] private WaypointNode currentTargetNode;
+    private bool playerHasLineOfSight = false;
+    private WaypointNode currentTargetNode;
 
     private readonly List<WaypointNode> allWaypoints = new List<WaypointNode>();
     private List<WaypointNode> currentPath = new List<WaypointNode>();
