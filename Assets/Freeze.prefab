@@ -58,7 +58,7 @@ MonoBehaviour:
   playerFieldOfView: 55
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 128
   agentEyeHeight: 1
   playerTransform: {fileID: 0}
   playerCamera: {fileID: 0}

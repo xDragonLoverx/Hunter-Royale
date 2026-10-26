@@ -3796,7 +3796,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5418398615342516845, guid: 06e0f2d63dd08ca4cba6529fc2214984, type: 3}
       propertyPath: obstacleLayer.m_Bits
-      value: 0
+      value: 128
       objectReference: {fileID: 0}
     - target: {fileID: 6444598275886148971, guid: 06e0f2d63dd08ca4cba6529fc2214984, type: 3}
       propertyPath: m_Name
@@ -7773,7 +7773,7 @@ MonoBehaviour:
   agentClearanceRadius: 0.35
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   raycastHeightOffset: 0.5
 --- !u!4 &1352382566
 Transform:
@@ -11677,7 +11677,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3762307404128950518, guid: e667dacc4e049c74bbfb716fff14e9db, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6235285619904048486, guid: e667dacc4e049c74bbfb716fff14e9db, type: 3}
       propertyPath: m_Size.x
