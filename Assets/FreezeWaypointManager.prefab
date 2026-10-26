@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4865202623533148110}
   - component: {fileID: 4462192355856561365}
   m_Layer: 0
-  m_Name: WaypointManager
+  m_Name: FreezeWaypointManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,7 +171,7 @@ MonoBehaviour:
   agentClearanceRadius: 0.35
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 512
   raycastHeightOffset: 0.5
 --- !u!1001 &60985705635491910
 PrefabInstance:
