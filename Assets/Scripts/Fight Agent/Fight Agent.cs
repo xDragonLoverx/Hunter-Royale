@@ -23,7 +23,7 @@ public class FightAgent : MonoBehaviour
     //  --COMPONENTS--
 
     [SerializeField] LayerMask playerLayerMask;
-    [SerializeField] LayerMask obstacleLayerMask;
+    [SerializeField] LayerMask destructibleObstacleLayerMask;
 
     Transform player;
     FightAgentNode currentNode;
@@ -178,7 +178,7 @@ public class FightAgent : MonoBehaviour
     }
     void DestroyObstacle()
     {
-        if (canAttack && Physics.CheckSphere(transform.position, 1.5f, obstacleLayerMask))
+        if (canAttack && Physics.CheckSphere(transform.position, 1.5f, destructibleObstacleLayerMask))
         {
             StartCoroutine(Attack());
         }
@@ -295,7 +295,7 @@ public class FightAgent : MonoBehaviour
             else
             {
                 canSeePlayer = false;
-                if (hitInfo.transform.tag.Equals("Obstacle") && isInHuntingMode)
+                if (hitInfo.transform.tag.Equals("Destructible Obstacle") && isInHuntingMode)
                 {
                     currentBehavior = FightAgentBehavior.DestroyingObstacle;
                     placeToLookAt = hitInfo.transform;
