@@ -156,7 +156,7 @@ public class FollowAgent : MonoBehaviour
 
         if (Physics.Raycast(rayStart, dir.normalized, out RaycastHit hit, wallCheckDistance))
         {
-            if (hit.collider.CompareTag("Wall"))
+            if (hit.collider.CompareTag("Ground"))
             return true;
         }
 
@@ -178,7 +178,7 @@ public class FollowAgent : MonoBehaviour
         float distanceToPlayer = dirToPlayer.magnitude;
 
 
-        // Beginning raycasting for obstacles starting above ground a little
+        // Beginning raycasting for obstacles starting above "Ground" a little
         Vector3 rayStart = transform.position + Vector3.up;
 
 
@@ -194,7 +194,7 @@ public class FollowAgent : MonoBehaviour
 
         if (Physics.Raycast(rayStart, dirToPlayer.normalized, out RaycastHit hit, distanceToPlayer))
         {
-            if (hit.collider.CompareTag("Wall"))
+            if (hit.collider.CompareTag("Ground"))
             {
                 return false;
             }
