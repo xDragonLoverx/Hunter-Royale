@@ -23,6 +23,10 @@ public class Projectile : MonoBehaviour
             {
                 collision.gameObject.GetComponent<FollowAgent>().Die();
             }
+            else if (collision.gameObject.name == "FreezeAgent")
+            {
+                Destroy(collision.gameObject.transform.parent.gameObject);
+            }
             else
             {
                 Destroy(collision.gameObject);
