@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 public class WaypointNetworkManager : MonoBehaviour
 {
     [Header("Corridor Settings")]
@@ -19,7 +17,6 @@ public class WaypointNetworkManager : MonoBehaviour
 
         foreach (var node in nodes)
         {
-            Undo.RecordObject(node, "Connect Waypoints");
             if (node.neighbors == null) node.neighbors = new List<WaypointNode>();
             node.neighbors.Clear();
         }
@@ -50,12 +47,6 @@ public class WaypointNetworkManager : MonoBehaviour
                 }
             }
         }
-        foreach (var node in nodes)
-        {
-            EditorUtility.SetDirty(node);
-            PrefabUtility.RecordPrefabInstancePropertyModifications(node);
-        }
-        EditorSceneManager.MarkSceneDirty(gameObject.scene);
 
         Debug.Log($"[NetworkManager] Done! Linked {totalConnections / 2}");
     }
