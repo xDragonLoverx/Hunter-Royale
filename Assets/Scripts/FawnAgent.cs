@@ -60,7 +60,7 @@ public class FawnAgent : MonoBehaviour
                 else if (Vector3.Angle(transform.forward, Vector3.Normalize(Player.transform.position - transform.position)) <= 45 && 
                     Physics.Raycast(transform.position, Vector3.Normalize(Player.transform.position - transform.position), out RaycastHit hit, 30, SightLayer))
                 {
-                    if (hit.collider.gameObject.layer == 6)
+                    if (hit.collider.gameObject.layer == 10)
                     {
                         Mode = BehaviorMode.Chasing;
                     }
@@ -74,7 +74,7 @@ public class FawnAgent : MonoBehaviour
                 else if (Vector3.Angle(transform.forward, Vector3.Normalize(Player.transform.position - transform.position)) <= 45 &&
                     Physics.Raycast(transform.position, Vector3.Normalize(Player.transform.position - transform.position), out RaycastHit hit, 30, SightLayer))
                 {
-                    if (hit.collider.gameObject.layer == 6)
+                    if (hit.collider.gameObject.layer == 10)
                     {
                         Agent.SetDestination(Player.transform.position);
                     }
