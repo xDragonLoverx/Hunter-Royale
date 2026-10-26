@@ -3794,6 +3794,10 @@ PrefabInstance:
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 1601767393}
+    - target: {fileID: 5418398615342516845, guid: 06e0f2d63dd08ca4cba6529fc2214984, type: 3}
+      propertyPath: obstacleLayer.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6444598275886148971, guid: 06e0f2d63dd08ca4cba6529fc2214984, type: 3}
       propertyPath: m_Name
       value: Freeze
@@ -7769,7 +7773,7 @@ MonoBehaviour:
   agentClearanceRadius: 0.35
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   raycastHeightOffset: 0.5
 --- !u!4 &1352382566
 Transform:
@@ -9398,6 +9402,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   GroundDrag: 5
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  StepSoundRange: 0
+  StepTime: 0
 --- !u!1001 &1610551230
 PrefabInstance:
   m_ObjectHideFlags: 0

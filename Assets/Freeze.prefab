@@ -58,12 +58,10 @@ MonoBehaviour:
   playerFieldOfView: 55
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 512
   agentEyeHeight: 1
   playerTransform: {fileID: 0}
   playerCamera: {fileID: 0}
-  playerHasLineOfSight: 0
-  currentTargetNode: {fileID: 0}
 --- !u!82 &4994491542769848151
 AudioSource:
   m_ObjectHideFlags: 0
@@ -228,7 +226,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 0625e45e3afdf464da9b64a0deb7e78c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
