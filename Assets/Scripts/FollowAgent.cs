@@ -44,17 +44,23 @@ public class FollowAgent : MonoBehaviour
     [SerializeField] private GameObject agentPrefab;
     [SerializeField] private int amtToSpawn = 1;
     [SerializeField] private Transform[] spawnWaypoints;
+    
     private static bool followExist = false;
+    public int maxHP = 3;
+    public int currHP;
+
 
     Transform currWaypoint;
 
 
     void Start()
     {
+        currHP = maxHP;
         if (!followExist)
         {
             followExist = true;
             SpawnFollowAgent();
+            
         }
     }
 
@@ -356,15 +362,32 @@ public class FollowAgent : MonoBehaviour
         }
     }
 
-    private void Attack()
+    public void Attack()
     {
         Debug.Log("Follow Agent attacks player.");
     }
 
+    public void Attacked(int dmg)
+    {
+        currHP -= dmg;
 
+        Debug.Log("Follow Agent was attacked. Current HP: " + currHP);
+        
+        if (currHP > 0)
+        {
+            Die();
+        }
+    }
+    public void Die()
+    {
+        Debug.Log("Folow Agent has died.");
+
+        Destroy(this.gameObject);
+    }
+    
     /*public bool Alert()
     {
-        // sth sth other agents
+        //
     }
     */
 }
