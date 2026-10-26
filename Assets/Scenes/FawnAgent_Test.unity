@@ -1188,11 +1188,11 @@ MonoBehaviour:
   PlayerHeight: 2
   Ground:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   GroundDrag: 5
   EnemyLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   StepSoundRange: 5
   StepTime: 100
 --- !u!1001 &2002810864
@@ -1411,6 +1411,14 @@ PrefabInstance:
     - target: {fileID: 1343813921649549319, guid: 2131fcb67514ac14da936ba71e3383a3, type: 3}
       propertyPath: m_Name
       value: FawnAgent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3821012263802543511, guid: 2131fcb67514ac14da936ba71e3383a3, type: 3}
+      propertyPath: SightLayer.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4245450611030718279, guid: 2131fcb67514ac14da936ba71e3383a3, type: 3}
+      propertyPath: SightLayer.m_Bits
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4982859250754531356, guid: 2131fcb67514ac14da936ba71e3383a3, type: 3}
       propertyPath: m_LocalPosition.x
