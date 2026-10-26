@@ -48,8 +48,6 @@ public class FawnAgent : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C)) { StartFleeing(); }
-        if (Input.GetKeyDown(KeyCode.B)) { Die(); }
         switch (Mode)
         {
             case BehaviorMode.Searching:
@@ -233,7 +231,8 @@ public class FawnAgent : MonoBehaviour
                 Player.GetComponent<PlayerMovement>().SetSpeedModifier(1.25f);
                 break;
             case 1:
-                Player.GetComponent<PlayerMovement>().SetAttackModifier(1.5f); break;
+                Player.GetComponent<PlayerMovement>().SetAttackModifier(1.5f); 
+                break;
             case 2:
                 gameObject.transform.GetChild(1).gameObject.SetActive(true);
                 //GameObject.Find("FightAgent").transform.GetChild(1).gameObject.SetActive(true);
@@ -254,6 +253,7 @@ public class FawnAgent : MonoBehaviour
     }
     public void Alert(Transform location)
     {
+        Debug.Log("Alerted");
         if (Mode != BehaviorMode.Fleeing)
         {
             if (Mode == BehaviorMode.Searching) { Mode = BehaviorMode.Chasing; }
@@ -263,6 +263,9 @@ public class FawnAgent : MonoBehaviour
     }
     public void StartFleeing()
     {
+        Destroy(ThisKillScreen);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         GameObject.Find("Directional Light").GetComponent<Light>().intensity = 2;
         Player.transform.GetChild(3).gameObject.SetActive(false);
         Player.GetComponent<PlayerMovement>().SetSpeedModifier(1);

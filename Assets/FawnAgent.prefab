@@ -53,7 +53,7 @@ MonoBehaviour:
   Agent: {fileID: 4245450611030718279}
   SightLayer:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 128
 --- !u!114 &4245450611030718279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,7 +69,7 @@ MonoBehaviour:
   SightLayer:
     serializedVersion: 2
     m_Bits: 128
-  MoveSpeed: 5
+  MoveSpeed: 4
 --- !u!54 &6900780338568163693
 Rigidbody:
   m_ObjectHideFlags: 0

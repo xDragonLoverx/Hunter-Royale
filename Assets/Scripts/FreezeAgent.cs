@@ -199,7 +199,7 @@ public class FreezeAgent : MonoBehaviour
     }
 
     // ACTUATOR 2: INVISIBILITY & MODE HANDLING 
-    private void OnModeChanged(AgentMode newMode)
+    public void OnModeChanged(AgentMode newMode)
     {
         if (newMode == AgentMode.HUNTED)
         {

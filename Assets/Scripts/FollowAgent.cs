@@ -384,6 +384,10 @@ public class FollowAgent : MonoBehaviour
 
         Destroy(this.gameObject);
     }
+    public void StartFleeing()
+    {
+        currMode = mode.Hunted;
+    }
     
     /*public bool Alert()
     {

@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - Node
+  - Wall
+  - Agent
+  - Weapon
   layers:
   - Default
   - TransparentFX
