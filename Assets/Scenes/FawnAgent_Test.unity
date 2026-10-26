@@ -514,7 +514,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 886882591}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: Orientation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -690,7 +690,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1007657018}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: CameraPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -893,7 +893,7 @@ GameObject:
   - component: {fileID: 1444448117}
   - component: {fileID: 1444448116}
   - component: {fileID: 1444448115}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: PlayerObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1118,7 +1118,7 @@ GameObject:
   - component: {fileID: 1601767393}
   - component: {fileID: 1601767392}
   - component: {fileID: 1601767394}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1188,11 +1188,11 @@ MonoBehaviour:
   PlayerHeight: 2
   Ground:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   GroundDrag: 5
   EnemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   StepSoundRange: 5
   StepTime: 100
 --- !u!1001 &2002810864
@@ -1275,7 +1275,7 @@ GameObject:
   - component: {fileID: 2022856577}
   - component: {fileID: 2022856579}
   - component: {fileID: 2022856578}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: BlindenessEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1414,11 +1414,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3821012263802543511, guid: 2131fcb67514ac14da936ba71e3383a3, type: 3}
       propertyPath: SightLayer.m_Bits
-      value: 0
+      value: 1152
+      objectReference: {fileID: 0}
+    - target: {fileID: 3821012263802543511, guid: 2131fcb67514ac14da936ba71e3383a3, type: 3}
+      propertyPath: PlayerLayer.m_Bits
+      value: 1024
       objectReference: {fileID: 0}
     - target: {fileID: 4245450611030718279, guid: 2131fcb67514ac14da936ba71e3383a3, type: 3}
       propertyPath: SightLayer.m_Bits
-      value: 0
+      value: 128
       objectReference: {fileID: 0}
     - target: {fileID: 4982859250754531356, guid: 2131fcb67514ac14da936ba71e3383a3, type: 3}
       propertyPath: m_LocalPosition.x
