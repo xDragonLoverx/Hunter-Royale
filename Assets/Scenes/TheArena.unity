@@ -4168,10 +4168,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Freeze
       objectReference: {fileID: 0}
+    - target: {fileID: 6444598275886148971, guid: 06e0f2d63dd08ca4cba6529fc2214984, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 7341428609006611227, guid: 06e0f2d63dd08ca4cba6529fc2214984, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 0625e45e3afdf464da9b64a0deb7e78c, type: 2}
+    - target: {fileID: 7609327580843186850, guid: 06e0f2d63dd08ca4cba6529fc2214984, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
