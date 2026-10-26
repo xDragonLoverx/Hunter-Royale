@@ -3789,11 +3789,11 @@ PrefabInstance:
     - target: {fileID: 5418398615342516845, guid: 06e0f2d63dd08ca4cba6529fc2214984, type: 3}
       propertyPath: playerCamera
       value: 
-      objectReference: {fileID: 330585545}
+      objectReference: {fileID: 0}
     - target: {fileID: 5418398615342516845, guid: 06e0f2d63dd08ca4cba6529fc2214984, type: 3}
       propertyPath: playerTransform
       value: 
-      objectReference: {fileID: 1601767393}
+      objectReference: {fileID: 0}
     - target: {fileID: 5418398615342516845, guid: 06e0f2d63dd08ca4cba6529fc2214984, type: 3}
       propertyPath: obstacleLayer.m_Bits
       value: 0

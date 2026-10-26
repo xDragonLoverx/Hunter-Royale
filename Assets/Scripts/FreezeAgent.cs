@@ -439,12 +439,19 @@ public class FreezeAgent : MonoBehaviour
             if (p != null)
             {
                 playerTransform = p.transform;
-                playerCamera = p.GetComponentInChildren<Camera>();
             }
         }
-        else if (playerCamera == null)
+        if (playerCamera == null)
         {
-            playerCamera = playerTransform.GetComponentInChildren<Camera>();
+            GameObject camObj = GameObject.Find("CameraObj");
+            if (camObj != null)
+            {
+                playerCamera = camObj.GetComponentInChildren<Camera>();
+            }
+            else
+            {
+                playerCamera = Camera.main;
+            }
         }
     }
 
