@@ -126,9 +126,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 fightScript.OnAlertAgent?.Invoke(transform);
             }
-            if (c.transform.parent.gameObject.TryGetComponent<FawnAgent>(out FawnAgent fawnscript))
+            if (c.transform.parent.gameObject.name == "FawnAgent")
             {
-                fawnscript.Alert(transform);
+                c.transform.parent.gameObject.GetComponent<FawnAgent>().Alert(transform);
             }
         }
     }
@@ -136,10 +136,10 @@ public class PlayerMovement : MonoBehaviour
     {
         IsHunting = true;
         GameObject.Find("FawnAgent").GetComponent<FawnAgent>().StartFleeing();
-        //GameObject.Find("Fight Agent").GetComponent<FightAgent>().OnBecomeHunted();
-        //GameObject.Find("FlightAgent").GetComponent<FlightAgent>().ToggleBehavior(Behavior.Hunted);
-        //GameObject.Find("FollowAgent").GetComponent<FollowAgent>().StartFleeing();
-        //GameObject.Find("Freeze").GetComponent<FreezeAgent>().OnModeChanged(FreezeAgent.AgentMode.HUNTED);
+        GameObject.Find("Fight Agent").GetComponent<FightAgent>().OnBecomeHunted();
+        GameObject.Find("FlightEnemy").GetComponent<FlightAgent>().ToggleBehavior(Behavior.Hunted);
+        GameObject.Find("FollowAgent").GetComponent<FollowAgent>().StartFleeing();
+        GameObject.Find("Freeze").GetComponent<FreezeAgent>().OnModeChanged(FreezeAgent.AgentMode.HUNTED);
     }
     public void SetSpeedModifier(float value) { SpeedMultiplier = value; }
     public void SetAttackModifier(float value) { AttackMultiplier = value; }
