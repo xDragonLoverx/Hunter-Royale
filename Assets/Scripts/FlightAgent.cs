@@ -66,7 +66,7 @@ public class FlightAgent : MonoBehaviour
         }
     }
 
-    //Need to fix findHidingSpot but otherwise is good?
+    //Progress: Done
     void Hunted()
     {
         if (!foundHidingSpot)
@@ -76,8 +76,9 @@ public class FlightAgent : MonoBehaviour
         }
         MoveToDestination(destination);
         distance = Vector3.Distance(transform.position, destination);
-        if(distance <= 0.5f)
+        if(distance <= 2f)
         {
+            Debug.Log("Reached Distance");
             ToggleRest();
             foundHidingSpot = false;
             behavior = Behavior.Wandering;
@@ -88,7 +89,12 @@ public class FlightAgent : MonoBehaviour
     void Hunting()
     {
         distance = Vector3.Distance(transform.position, playerTransform.position);
-        if(distance < 5f)
+        //if it gets too far from the player
+        if(distance >= 30f)
+        {
+            ToggleBehavior(Behavior.Wandering);
+        }
+        else if(distance <= 5f)
         {
             //perform leap attack
             Vector3 leapDirection = transform.forward * leapStrength;
@@ -103,7 +109,8 @@ public class FlightAgent : MonoBehaviour
             MoveToDestination(destination);
         }        
     }
-
+    //Should be good. Basically hunted behavior but always searching for player.
+    //Hopefully should make it look like it is wandering around the map
     void Wandering()
     {
         SearchPlayer();
@@ -114,18 +121,18 @@ public class FlightAgent : MonoBehaviour
         }
         MoveToDestination(destination);
         distance = Vector3.Distance(transform.position, destination);
-        if(distance <= 0.5f)
+        if(distance <= 2f)
         {
+            //Debug.Log("Reached Distance");
             ToggleRest();
             foundHidingSpot = false;
-            behavior = Behavior.Wandering;
         }
     }
 
     //Progress: Done
     void ToggleRest()
     {
-        Debug.Log("resting");
+        Debug.Log("Flight agent is resting");
         if (!isResting)
         {
             rb.linearVelocity = Vector3.zero;
@@ -138,7 +145,7 @@ public class FlightAgent : MonoBehaviour
         }
     }
 
-    //Progress: Works? Needs testing with moveToPosition
+    //Progress: Done. Should be good for a prototype
     Vector3 findHidingSpot(Vector3 position)
     {
         //initial best position is where agent currently is
@@ -170,7 +177,7 @@ public class FlightAgent : MonoBehaviour
                 //start at candidate, aim down, checks if it is hitting ground, then uses position for something idk
                 if (Physics.Raycast(candidate, Vector3.down, out hit, 4f))
                 {
-                    Debug.Log("Tried to raycast: " + hit.point);
+                    //Debug.Log("Tried to raycast: " + hit.point);
                     
                     if (!hit.collider.CompareTag("Ground"))
                     {
@@ -192,12 +199,12 @@ public class FlightAgent : MonoBehaviour
                 }
             }
         }
-        Debug.Log(bestPos);
+        //Debug.Log(bestPos);
         foundHidingSpot = true;
         return bestPos;
     }
 
-    //Progress: Working, but not perfect. Sometimes gets stuck on walls, but for a prototype it should be ok.
+    //Progress: Working, but not perfect. Will get stuck on walls, but for a prototype it should be ok. Will need to revise later
     void MoveToDestination(Vector3 destination)
     {
         Vector3 targetDir = destination - transform.position;
@@ -206,19 +213,20 @@ public class FlightAgent : MonoBehaviour
         targetDir.Normalize();
 
         Vector3 origin = transform.position + Vector3.up * 0.5f;
-
         Vector3 leftDir = Quaternion.Euler(0f, -avoidAngle, 0f) * targetDir;
-
         Vector3 rightDir = Quaternion.Euler(0f, avoidAngle, 0f) * targetDir;
 
+        //drawing some debug rays to help see what is causing wall stuck
         bool blockedForward = Physics.Raycast(origin, targetDir, out RaycastHit forwardHit, obstacleDistance, wallLayer);
-
+        //Debug.DrawRay(origin, targetDir, Color.red, 0.1f);
         bool blockedLeft = Physics.Raycast(origin, leftDir, out RaycastHit leftHit, obstacleDistance, wallLayer);
-
+        //Debug.DrawRay(origin, leftDir, Color.green, 0.1f);
         bool blockedRight = Physics.Raycast(origin, rightDir, out RaycastHit rightHit, obstacleDistance, wallLayer);
+        //Debug.DrawRay(origin, rightDir, Color.blue, 0.1f);
 
         Vector3 moveDir = targetDir;
 
+        //issue may exist in here because raycasts may not be returning correct logic?
         if (blockedForward)
         {
             if (!blockedLeft && !blockedRight)
@@ -241,7 +249,8 @@ public class FlightAgent : MonoBehaviour
 
         transform.position += moveDir * speed * Time.deltaTime;
 
-        if (moveDir.sqrMagnitude > 0.001f)
+        //rotates agent towards destination
+        if (moveDir.sqrMagnitude > 0.01f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDir, Vector3.up);
 
@@ -249,7 +258,7 @@ public class FlightAgent : MonoBehaviour
         }
     }
     
-    //Progress: not done yet? may want to account for specific behaviors
+    //Progress: Should be done. Will want to make sure the bool value changes
     void SearchPlayer()
     {
         distance = Vector3.Distance(transform.position, playerTransform.position);
@@ -278,7 +287,7 @@ public class FlightAgent : MonoBehaviour
         }
     }
     
-    //Progress: Done
+    //Progress: Done. This can be used for the player script to change behaviors for this agent
     public void ToggleBehavior(Behavior newBehavior)
     {
         behavior = newBehavior;

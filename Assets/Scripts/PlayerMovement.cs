@@ -73,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
     }
     public void MakeNoise(float range)
     {
-        Debug.Log("Step");
+        //Debug.Log("Step");
         Collider[] Nearby = Physics.OverlapSphere(transform.position, range, EnemyLayer);
         foreach (Collider c in Nearby)
         {
