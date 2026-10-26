@@ -74,6 +74,21 @@ public class PlayerMovement : MonoBehaviour
             RB.linearVelocity = new Vector3(limitedVelocity.x, 0, limitedVelocity.z);
         }
     }
+
+
+    //Freeze Agent Debuff
+    private bool isFrozen = false;
+
+    public void SetFrozen(bool frozenState)
+    {
+        isFrozen = frozenState;
+
+        if (isFrozen && RB != null)
+        {
+            RB.linearVelocity = new Vector3(0f, RB.linearVelocity.y, 0f);
+        }
+    }
+
     public void MakeNoise(float range)
     {
         Collider[] Nearby = Physics.OverlapSphere(transform.position, range, EnemyLayer);
@@ -113,4 +128,5 @@ public class PlayerMovement : MonoBehaviour
         [CurrentWaypoint Object] = location.gameObject;
     }
     */
+
 }
