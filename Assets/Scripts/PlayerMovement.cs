@@ -15,6 +15,14 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 MoveDirection;
     Rigidbody RB;
+
+    [SerializeField] LayerMask EnemyLayer;
+    [SerializeField] float StepSoundRange;
+    [SerializeField] int StepTime;
+    int CurrentSteps;
+
+    float SpeedMultiplier = 1;
+    float AttackMultiplier = 1;
     private void Start()
     {
         RB = GetComponent<Rigidbody>();
@@ -24,11 +32,23 @@ public class PlayerMovement : MonoBehaviour
     {
         Grounded = Physics.Raycast(transform.position, Vector3.down, PlayerHeight * 0.5f + 0.2f, Ground);
 
+        Vector3 flatVelocity = new Vector3(RB.linearVelocity.x, 0f, RB.linearVelocity.z);
+
         MyInput();
-        SpeedControl();
+        SpeedControl(flatVelocity);
 
         if (Grounded) { RB.linearDamping = GroundDrag; }
         else { RB.linearDamping = 0; }
+
+        if (flatVelocity.magnitude > 0.5f)
+        {
+            CurrentSteps++;
+        }
+        if (CurrentSteps >= StepTime)
+        {
+            CurrentSteps = 0;
+            MakeNoise(StepSoundRange);
+        }
     }
     private void FixedUpdate()
     {
@@ -43,18 +63,18 @@ public class PlayerMovement : MonoBehaviour
     {
         MoveDirection = Orientation.forward * VerticalInput + Orientation.right * HorizontalInput;
 
-        RB.AddForce(MoveDirection.normalized * MoveSpeed * 10f, ForceMode.Force);
+        RB.AddForce(MoveDirection.normalized * MoveSpeed * SpeedMultiplier * 10f, ForceMode.Force);
     }
-    private void SpeedControl()
+    private void SpeedControl(Vector3 flatVel)
     {
-        Vector3 FlatVelocity = new Vector3(RB.linearVelocity.x, 0f, RB.linearVelocity.z);
 
-        if (FlatVelocity.magnitude > MoveSpeed)
+        if (flatVel.magnitude > MoveSpeed * SpeedMultiplier)
         {
-            Vector3 limitedVelocity = FlatVelocity.normalized * MoveSpeed;
+            Vector3 limitedVelocity = flatVel.normalized * MoveSpeed * SpeedMultiplier;
             RB.linearVelocity = new Vector3(limitedVelocity.x, 0, limitedVelocity.z);
         }
     }
+
 
     //Freeze Agent Debuff
     private bool isFrozen = false;
@@ -68,4 +88,45 @@ public class PlayerMovement : MonoBehaviour
             RB.linearVelocity = new Vector3(0f, RB.linearVelocity.y, 0f);
         }
     }
+
+    public void MakeNoise(float range)
+    {
+        Collider[] Nearby = Physics.OverlapSphere(transform.position, range, EnemyLayer);
+        foreach (Collider c in Nearby)
+        {
+            /*
+            if (c.gameObject.TryGetComponent<FightAgent>(out FightAgent script))
+            {
+                script.Alert(transform);
+            }
+            else if (c.gameObject.TryGetComponent<FlightAgent>(out FlightAgent script))
+            {
+                script.Alert(transform);
+            }
+            else if (c.gameObject.TryGetComponent<FreezeAgent>(out FreezeAgent script))
+            {
+                script.Alert(transform);
+            }
+            else*/ if (c.transform.parent.gameObject.TryGetComponent<FawnAgent>(out FawnAgent script))
+            {
+                script.Alert(transform);
+            }
+            /*
+            else if (c.gameObject.TryGetComponent<FollowAgent>(out FollowAgent script))
+            {
+                script.Alert(transform);
+            }
+            */
+        }
+    }
+    public void SetSpeedModifier(float value) { SpeedMultiplier = value; }
+    public void SetAttackModifier(float value) { AttackMultiplier = value; }
+    /* Sameple Alert Function
+    public void Alert(Transform location)
+    {
+        [NavmeshAgent Object].SetDestination(location.position);
+        [CurrentWaypoint Object] = location.gameObject;
+    }
+    */
+
 }
