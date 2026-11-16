@@ -78,9 +78,23 @@ public class EnemyManager : MonoBehaviour
     }
     void FindFarRoom()
     {
+        float furthest = 0;
+        Transform bestChoice = CurrentWaypoint;
+
+        foreach (Transform t in Waypoints)
+        {
+            if (t != CurrentWaypoint)
+            {
+                if (Vector3.Distance(Player.transform.position, t.position) > furthest)
+                {
+                    bestChoice = t; furthest = Vector3.Distance(Player.transform.position, t.position)
+                }
+            }
+            return bestChoice;
+        }
 
     }
-    
+
     //When the player gets too close to the weapon, find the closest agent to the weapon and bring them there
     void HerdingAuction()
     {
@@ -90,6 +104,59 @@ public class EnemyManager : MonoBehaviour
     //Once the heat meter has maxed out, find the two closest agents and send them to patrol elsewhere
     void HeatAuction()
     {
+        GameObject closestAgent = null
+        GameObject secondClosestAgent = null
+
+        float highestBid
+        float secondHighestBid
+
+        for each agent in Agents
+        {
+            float distanceToPlayer = Vector3.Distance(agent.pos, PlayerPos)
+   
+            // Only agents affecting heat are bidding
+            if (distanceToPlayer <= HeatRadius)
+            {
+                float bid = 0
+                bid += HeatRadius - distanceToPlayer // closer = more points
+
+                if (distanceToPlayer < closestBid)
+                {
+                    // Previous closest becomes 2nd closest
+                    secondHighesttBid = HighestBid
+                    secondClosestAgent = closestAgent
+
+                    // Assigning closest agent
+                    highestBid = bid
+                    closestAgent = agent
+
+                else if (bid > secondHighestBid)
+                {
+                    secondHighestBid = bid
+                    secondClosestAgent = agent
+                }
+
+                }
+
+        }
+
+         // Finding far rooms
+        Transform firstFarRoom = FindFarRoom()
+
+        // Finding next far room
+        Transform secondFarRoom = findFarRoom()
+
+        if (closestAgent != null)
+        {
+            closestAgent.SetDestination(firstFarRoom)
+        }
+    
+        if (secondClosestAgent != null)
+        {
+            secondClosestAgent.SetDestination(secondFarRoom)
+        }
+
+        }
 
     }
 
