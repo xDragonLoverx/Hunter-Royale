@@ -31,10 +31,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform ShotHome;
     [SerializeField] GameObject Projectile;
     GameObject ThisProjectile;
+
+    GameObject EnemyManager;
     private void Start()
     {
         RB = GetComponent<Rigidbody>();
         RB.freezeRotation = true;
+        EnemyManager = GameObject.Find("EnemyManager");
     }
     private void Update()
     {
@@ -140,6 +143,7 @@ public class PlayerMovement : MonoBehaviour
         GameObject.Find("FlightEnemy").GetComponent<FlightAgent>().ToggleBehavior(Behavior.Hunted);
         GameObject.Find("FollowAgent").GetComponent<FollowAgent>().StartFleeing();
         GameObject.Find("Freeze").GetComponent<FreezeAgent>().OnModeChanged(FreezeAgent.AgentMode.HUNTED);
+        EnemyManager.GetComponent<EnemyManager>().SetPlayerHunting(true);
     }
     public void SetSpeedModifier(float value) { SpeedMultiplier = value; }
     public void SetAttackModifier(float value) { AttackMultiplier = value; }
