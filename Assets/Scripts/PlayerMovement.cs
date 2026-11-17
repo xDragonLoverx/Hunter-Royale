@@ -23,10 +23,21 @@ public class PlayerMovement : MonoBehaviour
 
     float SpeedMultiplier = 1;
     float AttackMultiplier = 1;
+
+    bool IsHunting = false;
+    [SerializeField] float AttackTime;
+    float AttackCount;
+
+    [SerializeField] Transform ShotHome;
+    [SerializeField] GameObject Projectile;
+    GameObject ThisProjectile;
+
+    GameObject EnemyManager;
     private void Start()
     {
         RB = GetComponent<Rigidbody>();
         RB.freezeRotation = true;
+        EnemyManager = GameObject.Find("EnemyManager");
     }
     private void Update()
     {
@@ -48,6 +59,26 @@ public class PlayerMovement : MonoBehaviour
         {
             CurrentSteps = 0;
             MakeNoise(StepSoundRange);
+        }
+        if (IsHunting)
+        {
+            AttackCount += 1 * AttackMultiplier;
+            if (AttackCount >= AttackTime && Input.GetKey(KeyCode.Space))
+            {
+                ThisProjectile = Instantiate(Projectile, ShotHome.position, ShotHome.rotation);
+                ThisProjectile.GetComponent<Projectile>().SetSpeed(AttackMultiplier);
+                Destroy(ThisProjectile, 3);
+                AttackCount = 0;
+            }
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Weapon")
+        {
+            collision.gameObject.SetActive(false);
+            GameObject.Find("Main Camera").transform.GetChild(0).gameObject.SetActive(true);
+            StartHunting();
         }
     }
     private void FixedUpdate()
@@ -74,43 +105,46 @@ public class PlayerMovement : MonoBehaviour
             RB.linearVelocity = new Vector3(limitedVelocity.x, 0, limitedVelocity.z);
         }
     }
+
+
+    //Freeze Agent Debuff
+    private bool isFrozen = false;
+
+    public void SetFrozen(bool frozenState)
+    {
+        isFrozen = frozenState;
+
+        if (isFrozen && RB != null)
+        {
+            RB.linearVelocity = new Vector3(0f, RB.linearVelocity.y, 0f);
+        }
+    }
+
     public void MakeNoise(float range)
     {
         Collider[] Nearby = Physics.OverlapSphere(transform.position, range, EnemyLayer);
         foreach (Collider c in Nearby)
         {
-            /*
-            if (c.gameObject.TryGetComponent<FightAgent>(out FightAgent script))
+            if (c.gameObject.TryGetComponent(out FightAgent fightScript))
             {
-                script.Alert(transform);
+                fightScript.OnAlertAgent?.Invoke(transform);
             }
-            else if (c.gameObject.TryGetComponent<FlightAgent>(out FlightAgent script))
+            if (c.transform.parent.gameObject.name == "FawnAgent")
             {
-                script.Alert(transform);
+                c.transform.parent.gameObject.GetComponent<FawnAgent>().Alert(transform);
             }
-            else if (c.gameObject.TryGetComponent<FreezeAgent>(out FreezeAgent script))
-            {
-                script.Alert(transform);
-            }
-            else*/ if (c.transform.parent.gameObject.TryGetComponent<FawnAgent>(out FawnAgent script))
-            {
-                script.Alert(transform);
-            }
-            /*
-            else if (c.gameObject.TryGetComponent<FollowAgent>(out FollowAgent script))
-            {
-                script.Alert(transform);
-            }
-            */
         }
+    }
+    void StartHunting()
+    {
+        IsHunting = true;
+        GameObject.Find("FawnAgent").GetComponent<FawnAgent>().StartFleeing();
+        GameObject.Find("Fight Agent").GetComponent<FightAgent>().OnBecomeHunted();
+        GameObject.Find("FlightEnemy").GetComponent<FlightAgent>().ToggleBehavior(Behavior.Hunted);
+        GameObject.Find("FollowAgent").GetComponent<FollowAgent>().StartFleeing();
+        GameObject.Find("Freeze").GetComponent<FreezeAgent>().OnModeChanged(FreezeAgent.AgentMode.HUNTED);
+        EnemyManager.GetComponent<EnemyManager>().SetPlayerHunting(true);
     }
     public void SetSpeedModifier(float value) { SpeedMultiplier = value; }
     public void SetAttackModifier(float value) { AttackMultiplier = value; }
-    /* Sameple Alert Function
-    public void Alert(Transform location)
-    {
-        [NavmeshAgent Object].SetDestination(location.position);
-        [CurrentWaypoint Object] = location.gameObject;
-    }
-    */
 }

@@ -43,13 +43,11 @@ public class FawnAgent : MonoBehaviour
         Mode = BehaviorMode.Searching;
         FindNewWaypoint();
 
-        KillChoices = new int[] { 0, 1, -1 };
-        BargainChoices = new int[] { 0, 1, -1 };
+        KillChoices = new int[] { 0, 1, 2 };
+        BargainChoices = new int[] { 0, 1, 2 };
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C)) { StartFleeing(); }
-        if (Input.GetKeyDown(KeyCode.B)) { Die(); }
         switch (Mode)
         {
             case BehaviorMode.Searching:
@@ -60,7 +58,7 @@ public class FawnAgent : MonoBehaviour
                 else if (Vector3.Angle(transform.forward, Vector3.Normalize(Player.transform.position - transform.position)) <= 45 && 
                     Physics.Raycast(transform.position, Vector3.Normalize(Player.transform.position - transform.position), out RaycastHit hit, 30, SightLayer))
                 {
-                    if (hit.collider.gameObject.layer == 6)
+                    if (hit.collider.gameObject.layer == 10)
                     {
                         Mode = BehaviorMode.Chasing;
                     }
@@ -74,7 +72,7 @@ public class FawnAgent : MonoBehaviour
                 else if (Vector3.Angle(transform.forward, Vector3.Normalize(Player.transform.position - transform.position)) <= 45 &&
                     Physics.Raycast(transform.position, Vector3.Normalize(Player.transform.position - transform.position), out RaycastHit hit, 30, SightLayer))
                 {
-                    if (hit.collider.gameObject.layer == 6)
+                    if (hit.collider.gameObject.layer == 10)
                     {
                         Agent.SetDestination(Player.transform.position);
                     }
@@ -152,7 +150,7 @@ public class FawnAgent : MonoBehaviour
             if (!NoAttacksLeft)
             {
                 Mode = BehaviorMode.Waiting;
-                ThisKillScreen = Instantiate(KillScreen, Canvas.transform);
+                if (ThisKillScreen == null) { ThisKillScreen = Instantiate(KillScreen, Canvas.transform); }
                 for (int i = 0; i < KillChoices.Length; i++)
                 {
                     if (KillChoices[i] == -1)
@@ -182,10 +180,8 @@ public class FawnAgent : MonoBehaviour
                 GameObject.Find("Directional Light").GetComponent<Light>().intensity = 0;
                 break;
             case 2:
-                //GameObject.Find("FightAgent").GetComponent<FightAgent>().Alert(Player.transform.position);
-                //GameObject.Find("FlightAgent").GetComponent<FlightAgent>().Alert(Player.transform.position);
-                //GameObject.Find("FreezeAgent").GetComponent<FreezeAgent>().Alert(Player.transform.position);
-                //GameObject.Find("FollowAgent").GetComponent<FollowAgent>().Alert(Player.transform.position);
+                GameObject.Find("Fight Agent").GetComponent<FightAgent>().OnAlertAgent?.Invoke(transform);
+                GameObject.Find("FlightAgent").GetComponent<FlightAgent>().Alert(Player.transform.position);
                 break;
         }
         Destroy(ThisKillScreen);
@@ -208,7 +204,7 @@ public class FawnAgent : MonoBehaviour
         if (!NoBargainsLeft)
         {
             Mode = BehaviorMode.Waiting;
-            ThisBargainScreen = Instantiate(BargainScreen, Canvas.transform);
+            if (ThisBargainScreen == null) { ThisBargainScreen = Instantiate(BargainScreen, Canvas.transform); }
             for (int i = 0; i < BargainChoices.Length; i++)
             {
                 if (BargainChoices[i] == -1)
@@ -233,15 +229,17 @@ public class FawnAgent : MonoBehaviour
                 Player.GetComponent<PlayerMovement>().SetSpeedModifier(1.25f);
                 break;
             case 1:
-                Player.GetComponent<PlayerMovement>().SetAttackModifier(1.5f); break;
+                Player.GetComponent<PlayerMovement>().SetAttackModifier(1.5f); 
+                break;
             case 2:
                 gameObject.transform.GetChild(1).gameObject.SetActive(true);
-                //GameObject.Find("FightAgent").transform.GetChild(1).gameObject.SetActive(true);
-                //GameObject.Find("FlightAgent").transform.GetChild(1).gameObject.SetActive(true);
-                //GameObject.Find("FreezeAgent").transform.GetChild(1).gameObject.SetActive(true);
-                //GameObject.Find("FollowAgent").transform.GetChild(1).gameObject.SetActive(true);
+                GameObject.Find("Fight Agent").transform.GetChild(1).gameObject.SetActive(true);
+                GameObject.Find("FlightEnemy").transform.GetChild(1).gameObject.SetActive(true);
+                GameObject.Find("Freeze").transform.GetChild(1).gameObject.SetActive(true);
+                GameObject.Find("FollowAgent").transform.GetChild(0).gameObject.SetActive(true);
                 break;
         }
+        Debug.Log(ThisBargainScreen);
         Destroy(ThisBargainScreen);
         Transform furthestPoint = ChooseWaypoint("Teleporting");
         Agent.enabled = false;
@@ -254,6 +252,7 @@ public class FawnAgent : MonoBehaviour
     }
     public void Alert(Transform location)
     {
+        Debug.Log("Alerted");
         if (Mode != BehaviorMode.Fleeing)
         {
             if (Mode == BehaviorMode.Searching) { Mode = BehaviorMode.Chasing; }
@@ -263,6 +262,9 @@ public class FawnAgent : MonoBehaviour
     }
     public void StartFleeing()
     {
+        Destroy(ThisKillScreen);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         GameObject.Find("Directional Light").GetComponent<Light>().intensity = 2;
         Player.transform.GetChild(3).gameObject.SetActive(false);
         Player.GetComponent<PlayerMovement>().SetSpeedModifier(1);

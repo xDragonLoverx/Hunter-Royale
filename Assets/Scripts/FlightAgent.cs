@@ -292,4 +292,9 @@ public class FlightAgent : MonoBehaviour
     {
         behavior = newBehavior;
     }
+    public void Alert(Vector3 position)
+    {
+        destination = position;
+        MoveToDestination(destination);
+    }
 }
